@@ -1,5 +1,5 @@
-resource "aws_iam_role" "role" {
-  name = "esgi-ec2-ssm-role"
+resource "aws_iam_role" "ec2_role" {
+  name = "esgi-ec2-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -12,9 +12,7 @@ resource "aws_iam_role" "role" {
       }
     ]
   })
-  tags = {
-    Name = "esgi-ec2-ssm-role"
-  }
+  
 }
 
 resource "aws_iam_policy" "ec2_ssm_cloudwatch" {
@@ -78,6 +76,6 @@ resource "aws_iam_policy" "ec2_ssm_cloudwatch" {
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_ssm_cloudwatch_attachment" {
-  role       = aws_iam_role.role.name
+  role       = aws_iam_role.ec2_role.name
   policy_arn = aws_iam_policy.ec2_ssm_cloudwatch.arn
 }

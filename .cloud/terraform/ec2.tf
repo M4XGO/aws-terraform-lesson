@@ -1,40 +1,43 @@
 resource "aws_instance" "ec2" {
-  ami = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t4g.nano"
 
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
-  subnet_id = data.aws_subnet.subnet.id
-  vpc_security_group_ids = [data.aws_security_group.security_group.id]
+  subnet_id                   = data.aws_subnet.private_1.id
+  vpc_security_group_ids      = [data.aws_security_group.app.id]
   associate_public_ip_address = false
+
   metadata_options {
-    http_tokens               = "required"
-    http_endpoint             = "enabled"
+    http_tokens                 = "required"
+    http_endpoint               = "enabled"
     http_put_response_hop_limit = 1
   }
+
   ebs_block_device {
     device_name           = "/dev/xvdf"
     volume_size           = 10
     volume_type           = "gp3"
     delete_on_termination = true
+    tags = merge(local.common_tags, {
+      Name = "esgi-ebs-data"
+    })
   }
+
   user_data = <<-EOF
               #!/bin/bash
               apt-get update -y
               apt-get install -y nginx
 
-              # Ensure SSM Agent is installed and running for Session Manager
               snap install amazon-ssm-agent --classic
               systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
               systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
               systemctl enable nginx
               systemctl start nginx
 
-              # Prepare additional EBS volume
               DEVICE=/dev/xvdf
               MOUNT_POINT=/data
 
-              # Wait for the device to be attached
               for i in {1..10}; do
                 if lsblk | grep -q "xvdf"; then
                   break
@@ -57,13 +60,13 @@ resource "aws_instance" "ec2" {
               mkdir -p /var/log/web
               echo "Web server started at $(date)" >> /var/log/web/startup.log
               EOF
-  
-  tags = {
-    Name = "esgi-ec2-ssm"
-  }
+
+  tags = merge(local.common_tags, {
+    Name = "esgi-ec2"
+  })
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {
-  name = "esgi-ec2-ssm-instance-profile"
-  role = aws_iam_role.role.name
+  name = "esgi-ec2-instance-profile"
+  role = aws_iam_role.ec2_role.name
 }
