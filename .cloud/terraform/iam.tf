@@ -12,7 +12,7 @@ resource "aws_iam_role" "ec2_role" {
       }
     ]
   })
-  
+
 }
 
 resource "aws_iam_policy" "ec2_ssm_cloudwatch" {

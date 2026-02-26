@@ -33,10 +33,10 @@ resource "aws_db_instance" "postgres" {
   backup_window           = "03:00-04:00"
   maintenance_window      = "sun:04:00-sun:05:00"
 
-  skip_final_snapshot       = true
-  delete_automated_backups  = true
-  deletion_protection       = false
-  apply_immediately         = true
+  skip_final_snapshot      = true
+  delete_automated_backups = true
+  deletion_protection      = false
+  apply_immediately        = true
 
   tags = merge(local.common_tags, {
     Name = "esgi-rds"
