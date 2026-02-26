@@ -1,6 +1,6 @@
 locals {
   project     = "esgi-aws"
-  owner       = "nony&faugeras"
+  owner       = "nony_faugeras"
   environment = "training"
   cost_center = "esgi-m1"
 

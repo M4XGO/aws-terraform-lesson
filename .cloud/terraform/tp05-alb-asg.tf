@@ -64,8 +64,8 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "web" {
   name     = "esgi-tg"
-  port     = 80
-  protocol = "HTTP"
+  port     = 443
+  protocol = "HTTPS"
   vpc_id   = local.vpc_id
 
   health_check {
