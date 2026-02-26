@@ -4,6 +4,7 @@ resource "aws_launch_template" "web" {
   name_prefix   = "esgi-lt-"
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t4g.nano"
+  key_name      = data.aws_key_pair.esgi.key_name
 
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name

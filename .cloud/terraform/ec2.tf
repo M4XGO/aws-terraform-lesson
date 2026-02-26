@@ -1,6 +1,7 @@
 resource "aws_instance" "ec2" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t4g.nano"
+  key_name      = data.aws_key_pair.esgi.key_name
 
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
