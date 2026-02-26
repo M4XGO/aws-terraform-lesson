@@ -59,7 +59,9 @@ resource "aws_instance" "ec2" {
               echo "EBS data volume is mounted on $MOUNT_POINT" > $MOUNT_POINT/test.txt
 
               mkdir -p /var/log/web
-              echo "Web server started at $(date)" >> /var/log/web/startup.log
+              sed -i 's|/var/log/nginx/access.log|/var/log/web/access.log|g' /etc/nginx/nginx.conf
+              sed -i 's|/var/log/nginx/error.log|/var/log/web/error.log|g' /etc/nginx/nginx.conf
+              systemctl restart nginx
               EOF
 
   tags = merge(local.common_tags, {
