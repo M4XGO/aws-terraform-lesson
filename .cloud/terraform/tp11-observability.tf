@@ -54,7 +54,7 @@ resource "aws_iam_role_policy" "flow_logs" {
 
 resource "aws_flow_log" "main" {
   vpc_id                   = local.vpc_id
-  traffic_type             = "ALL"
+  traffic_type             = "REJECT"
   log_destination_type     = "cloud-watch-logs"
   log_destination          = aws_cloudwatch_log_group.flow_logs.arn
   iam_role_arn             = aws_iam_role.flow_logs.arn
